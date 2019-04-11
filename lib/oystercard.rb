@@ -12,4 +12,8 @@ class Oystercard
     @balance += amount
     return "You're card has a balance of #{balance}"
   end
+
+  def deduct(amount)
+    @balance -= amount
+  end
 end
