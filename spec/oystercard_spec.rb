@@ -4,6 +4,12 @@ describe Oystercard do
 
   it { is_expected.to respond_to(:balance) }
 
+  describe '#initialize' do
+    it 'assumes user does not start in journey' do
+      expect(subject.in_journey?).to eq false
+    end
+  end
+
   describe '#top_up' do
     it { is_expected.to respond_to(:top_up).with(1).argument }
 
@@ -18,11 +24,30 @@ describe Oystercard do
     end
   end
 
-  describe "#deduct" do
+  describe '#deduct' do
     it { is_expected.to respond_to(:deduct).with(1).argument }
 
     it 'deducts balance' do
       expect { subject.deduct(1) }.to change { subject.balance }.by(-1)
+    end
+  end
+
+  describe '#touch_in' do
+    it { is_expected.to respond_to(:touch_in) }
+
+    it 'user is now in journey' do
+      subject.touch_in
+      expect(subject.touch_in).to eq true
+    end
+  end
+
+  describe '#touch_out' do
+    it { is_expected.to respond_to(:touch_out) }
+
+    it 'user is no longer in journey' do
+      subject.touch_in
+      subject.touch_out
+      expect(subject.touch_out).to eq false
     end
   end
 end
