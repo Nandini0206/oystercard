@@ -2,6 +2,7 @@ require 'oystercard'
 
 describe Oystercard do
 
+let(:station){double :station}
   it { is_expected.to respond_to(:balance) }
 
   describe '#initialize' do
@@ -25,18 +26,25 @@ describe Oystercard do
   end
 
   describe '#touch_in' do
-    it { is_expected.to respond_to(:touch_in) }
-
-    it 'user is now in journey' do
-      min_fare = Oystercard::MIN_FARE
-      subject.top_up(min_fare)
-      subject.touch_in
-      expect(subject.touch_in).to eq true
-    end
 
     it 'raises error if card had insufficient balance' do
-      min_fare = Oystercard::MIN_FARE
-      expect { subject.touch_in }.to raise_error 'Insufficient balance'
+      expect { subject.touch_in(station) }.to raise_error 'Insufficient balance'
+    end
+
+    context 'when user has minimum fare' do
+      before do
+        min_fare = Oystercard::MIN_FARE
+        subject.top_up(min_fare)
+      end
+      it 'user is now in journey' do
+        subject.touch_in(station)
+        expect(subject.in_journey?).to eq true
+      end
+
+      it 'remembers the entry station' do
+        subject.touch_in(station)
+        expect(subject.entry_station).to eq station
+      end
     end
   end
 
@@ -46,9 +54,9 @@ describe Oystercard do
     it 'user is no longer in journey' do
       min_fare = Oystercard::MIN_FARE
       subject.top_up(min_fare)
-      subject.touch_in
+      subject.touch_in(station)
       subject.touch_out
-      expect(subject.touch_out).to eq false
+      expect(subject.in_journey?).to eq false
     end
 
     it 'reduces the amount by the minimum fare' do
