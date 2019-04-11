@@ -36,8 +36,15 @@ describe Oystercard do
     it { is_expected.to respond_to(:touch_in) }
 
     it 'user is now in journey' do
+      min_fare = Oystercard::MIN_FARE
+      subject.top_up(min_fare)
       subject.touch_in
       expect(subject.touch_in).to eq true
+    end
+
+    it 'raises error if card had insufficient balance' do
+      min_fare = Oystercard::MIN_FARE
+      expect { subject.touch_in }.to raise_error 'Insufficient balance'
     end
   end
 
@@ -45,6 +52,8 @@ describe Oystercard do
     it { is_expected.to respond_to(:touch_out) }
 
     it 'user is no longer in journey' do
+      min_fare = Oystercard::MIN_FARE
+      subject.top_up(min_fare)
       subject.touch_in
       subject.touch_out
       expect(subject.touch_out).to eq false
