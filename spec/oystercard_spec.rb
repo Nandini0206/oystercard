@@ -3,7 +3,7 @@ require 'oystercard'
 describe Oystercard do
   let(:entry_station) { double :station }
   let(:exit_station) { double :station }
-  let(:journey){{entry_station: entry_station, exit_station: exit_station}}
+  let(:journey) { { entry_station: entry_station, exit_station: exit_station } }
 
   it { is_expected.to respond_to(:balance) }
 
